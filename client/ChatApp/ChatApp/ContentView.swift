@@ -40,9 +40,9 @@ struct ContentView: View {
                     .frame(width: 0.9 * geo.size.width)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
 
-                TextField("Message", text: self.$message)
+                UITextViewWrapper(text: self.$message, placeholder: "Message")
                     .border(Color.purple)
-                    .frame(width: 0.9 * geo.size.width)
+                    .frame(width: 0.9 * geo.size.width, height: 0.2 * geo.size.height)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     
                 Button(action: {
