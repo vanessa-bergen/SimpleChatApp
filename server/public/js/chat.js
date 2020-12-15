@@ -9,6 +9,23 @@ ws.addEventListener('open', () => {
 
 ws.addEventListener('message', event => {
 	console.log("received from server: ", event.data);
+
+    var data = event.data
+    // data send from iOS is an ArrayBuffer, convert to String
+    if (data instanceof ArrayBuffer) {
+        var enc = new TextDecoder("utf-8");
+        var data = enc.decode(data);
+    }
+
+    try {
+            var json = JSON.parse(data);
+            console.log("sjon "+ json.message);
+        } catch (e) {
+            console.log('Error ' + e + ' This doesn\'t look like a valid JSON: ' + json);
+            return;
+        }
+    output.innerHTML += '<p><strong>' + json.handle + ': </strong>' + json.message + '</p>';
+    
 });
 
 var message = document.getElementById('message');
@@ -18,7 +35,7 @@ var output = document.getElementById('output');
 var feedback = document.getElementById('feedback');
 
 btn.addEventListener('click', function() { 
-
-	ws.send("Hello from client");
+    const newId = uuidv4()
+	ws.send(JSON.stringify({ "id":newId,"handle": handle.value, "message": message.value }));
 	
 });
