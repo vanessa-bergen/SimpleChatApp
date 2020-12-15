@@ -10,7 +10,7 @@ import Foundation
 import Starscream
 
 class SocketManager: ObservableObject, WebSocketDelegate {
-    
+    @Published var messages = [Message]()
     var socket: WebSocket!
     var isConnected = false
     let server = WebSocketServer()
@@ -35,8 +35,11 @@ class SocketManager: ObservableObject, WebSocketDelegate {
             print("websocket is disconnected: \(reason) with code: \(code)")
         case .text(let string):
             print("Received text: \(string)")
+            let data = string.data(using: .utf8)!
+            self.decodeMessage(from: data)
         case .binary(let data):
             print("Received data: \(data.count)")
+            self.decodeMessage(from: data)
         case .ping(_):
             break
         case .pong(_):
@@ -64,8 +67,25 @@ class SocketManager: ObservableObject, WebSocketDelegate {
     }
     
     func send(with handle: String, for message: String) {
-        socket.write(string: "Hello from iOS") {
-            print("done sending")
+        let data = Message(handle: handle, message: message)
+        
+        guard let json = try? JSONEncoder().encode(data) else {
+            print("Failed to encode message")
+            return
+        }
+        
+        socket.write(data: json) {
+            print("sent message \(json)")
+        }
+    }
+    
+    // decode message sent from server to Message type
+    func decodeMessage(from message: Data) {
+        if let decodedMsg = try? JSONDecoder().decode(Message.self, from: message) {
+            print(decodedMsg.message)
+            self.messages.append(decodedMsg)
+        } else {
+            print("Invalid response from server")
         }
     }
     
