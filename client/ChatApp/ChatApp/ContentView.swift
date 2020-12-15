@@ -18,11 +18,11 @@ struct ContentView: View {
         GeometryReader { geo in
             VStack {
                 ScrollView {
-                    ForEach(0..<10) { num in
+                    ForEach(self.service.messages, id: \.id) { chat in
                         HStack {
-                            Text("\(num): ")
+                            Text("\(chat.handle): ")
                                 .bold()
-                            Text("message here")
+                            Text(chat.message)
                             Spacer()
                         }
                         .padding([.leading, .trailing], 5)
