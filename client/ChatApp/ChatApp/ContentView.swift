@@ -18,7 +18,7 @@ struct ContentView: View {
         GeometryReader { geo in
             VStack {
                 ScrollView {
-                    ForEach(self.service.messages, id: \.id) { chat in
+                    ForEach(self.service.messages, id: \._id) { chat in
                         HStack {
                             Text("\(chat.handle): ")
                                 .bold()
@@ -31,17 +31,18 @@ struct ContentView: View {
                     }.frame(maxWidth: .infinity)
                         
                 }
-                .border(Color.purple)
+                .background(Color.backgroundGrey)
+                .border(Color.borderGrey)
                 .padding()
                     
                     
                 TextField("Handle", text: self.$handle)
-                    .border(Color.purple)
+                    .border(Color.borderGrey)
                     .frame(width: 0.9 * geo.size.width)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
 
                 UITextViewWrapper(text: self.$message, placeholder: "Message")
-                    .border(Color.purple)
+                    .border(Color.borderGrey)
                     .frame(width: 0.9 * geo.size.width, height: 0.2 * geo.size.height)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     
@@ -54,8 +55,8 @@ struct ContentView: View {
                         .font(.headline)
                         .padding()
                 }
-                .background(Color.purple)
-                .cornerRadius(25)
+                .frame(width: 0.9 * geo.size.width)
+                .background(Color.btnBlue)
                 .padding(.bottom)
                 
             }
