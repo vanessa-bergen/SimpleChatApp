@@ -9,12 +9,12 @@
 import SwiftUI
 
 class Message: Codable {
-    var id: String
+    var _id: String
     var handle = ""
     var message = ""
     
     init(handle: String, message: String) {
-        self.id = UUID().uuidString
+        self._id = UUID().uuidString
         self.message = message
         self.handle = handle
     }
