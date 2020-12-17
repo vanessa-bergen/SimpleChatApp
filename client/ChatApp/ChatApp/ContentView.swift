@@ -9,12 +9,15 @@
 import SwiftUI
 
 struct ContentView: View {
+    @Environment(\.presentationMode) var presentationMode
+    var chatName: String
     @ObservedObject var service = SocketManager()
     @State private var output = ""
     @State private var handle = ""
     @State private var message = ""
     
     var body: some View {
+        
         GeometryReader { geo in
             VStack {
                 ScrollView {
@@ -60,12 +63,23 @@ struct ContentView: View {
                 .padding(.bottom)
                 
             }
+            .navigationBarTitle("\(self.chatName)")
+            .navigationBarItems(
+                trailing:
+                    Button(action: {
+                        self.presentationMode.wrappedValue.dismiss()
+
+                    }) {
+                        Text("Exit Chat")
+                    }
+            )
+            .navigationBarBackButtonHidden(true)
         }
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        ContentView(chatName: "Hello")
     }
 }
