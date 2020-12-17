@@ -9,9 +9,9 @@
 import SwiftUI
 
 class Message: Codable {
-    var _id: String
-    var handle = ""
-    var message = ""
+    private(set) var _id: String
+    private(set) var handle: String
+    private(set) var message: String
     
     init(handle: String, message: String) {
         self._id = UUID().uuidString
