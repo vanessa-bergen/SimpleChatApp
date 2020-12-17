@@ -2,6 +2,7 @@ var express = require('express');
 var path = require('path');
 var bodyParser = require('body-parser')
 var morgan = require('morgan');
+//var WebSocket = require('./websocket.js');
 
 module.exports = function() {
 	console.log('initializing server.js');
@@ -28,10 +29,10 @@ module.exports = function() {
 
 	});
 
-	require('../app/sample/routes.js')(app);
-	require('../app/chat/routes.js')(app);
-	require('../app/message/routes.js')(app);
-	console.log("routes initialized");
+	// require('../app/sample/routes.js')(app);
+	// require('../app/chat/routes.js')(app);
+	// require('../app/message/routes.js')(app);
+	// console.log("routes initialized");
 
 	return app
 }

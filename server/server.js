@@ -1,27 +1,26 @@
 var mongoScript = require('./config/mongoose.js');
 var expressScript = require('./config/express.js');
-var WebSocket = require('ws');
+var webSocketScript = require('./config/websocket.js');
 const {v4 : uuidv4} = require('uuid'); 
 
 var db = mongoScript();
 var app = expressScript();
 
-//var app = express();
 var server = app.listen(4000, function() {
 	console.log('listening to requests on port 4000');
 });
 
-var webSocketServer = new WebSocket.Server({ server: server });
-webSocketServer.binaryType = 'arraybuffer';
+// initialize the websocket server
+var wss = webSocketScript.init(server);
 
-webSocketServer.on('connection', function connection(ws) {
+wss.on('connection', function connection(ws) {
 	console.log('client connected');
-
-	ws.on('message', function incoming(data) {
-		console.log('Server Received: %s', data);
-		webSocketServer.clients.forEach(function each(client) {
-			client.send(data);
-		});
-	});
-
 });
+
+// initialize http routs
+require('./app/sample/routes.js')(app);
+require('./app/chat/routes.js')(app);
+// passing in the websocket server to send messages after POST of message
+require('./app/message/routes.js')(app, wss);
+console.log("routes initialized");
+
