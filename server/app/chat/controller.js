@@ -28,5 +28,15 @@ module.exports = function() {
 		});
 	}
 
+	c.getByName = function(req, res) {
+		var name = req.params.name;
+		var q = Chat.findOne({name : name}, "-__v");
+		q.exec(function(err, chat) {
+			if (err) return reqError(res, 500, err);
+
+			res.json(chat);
+		});
+	}
+
 	return c;
 }
