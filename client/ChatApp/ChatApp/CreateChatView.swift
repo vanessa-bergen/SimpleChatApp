@@ -13,14 +13,26 @@ struct CreateChatView: View {
     @State private var chatName = ""
     @State private var isSelected = false
     @State private var createNew = true
+    @State private var errorShown = false
+    @State private var action: Int? = 0
+    @State private var errMsg = ""
+    
+    var disabled: Bool {
+        return self.chatName.isEmpty
+    }
+    var apiCalls = APICalls()
     
     var body: some View {
         NavigationView {
             GeometryReader { geo in
-                VStack {
+                VStack(spacing: 10) {
+                    NavigationLink(destination: ContentView(chatName: self.chatName), tag: 1, selection: self.$action) {
+                        EmptyView()
+                    }
                     Text(self.createNew ? "Create New Chat Room" : "Join Existing Chat Room")
                         .font(.headline)
                         .foregroundColor(Color.btnBlue)
+                        .padding()
                     TextField("Enter Chat Name", text: self.$chatName,  onEditingChanged: { (edit) in
                                if edit {
                                    // focused
@@ -31,19 +43,59 @@ struct CreateChatView: View {
                                }
                         })
                         .textFieldStyle(MyTextFieldStyle(isSelected: self.$isSelected))
+                        // add red outline to textfield if there is an error when trying to create the chat
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 2)
+                                .stroke(Color.red, lineWidth: 2)
+                                .opacity(self.errorShown ? 1 : 0)
+                        )
                         .frame(width: 0.9 * geo.size.width)
-                    NavigationLink(destination: ContentView(chatName: self.chatName)) {
-                        Text(self.createNew ? "Create!" : "Join!")
-                            .foregroundColor(.white)
-                            .font(.headline)
-                            .padding()
+                    if self.errorShown {
+                        Text(self.errMsg)
+                            .foregroundColor(.red)
+                            .frame(width: 0.9 * geo.size.width)
                     }
+                    Button(action: {
+                        let newChat = Chat(name: self.chatName)
+                        self.apiCalls.sendData(Chat.self, for: newChat) { (result) in
+                            switch result {
+                            case .success((let data, let response)):
+                                print(response)
+                                self.errorShown = false
+                                self.action = 1
+                            case .failure(let error):
+                                self.errorShown = true
+                                print(error.localizedDescription)
+                                self.errMsg = error.localizedDescription
+                                
+                            }
+                        }
+                    }) {
+                    Text(self.createNew ? "Create!" : "Join!")
+                        .foregroundColor(.white)
+                        .font(.headline)
+                        .padding()
+                        .frame(maxWidth:.infinity)
+                        
+                    }
+                        
+                    
+                        .disabled(self.disabled)
                         .frame(width: 0.9 * geo.size.width)
-                        .contentShape(Rectangle())
                         .background(Color.btnBlue)
+                        .onTapGesture {
+                            if self.disabled {
+                                print("disabled")
+                                self.errMsg = "Please enter a chat name."
+                                withAnimation {
+                                    self.errorShown = true
+                                }
+                            }
+                        }
                         
                     VStack(spacing: 10) {
                         Divider()
+                            .padding(.top)
                         Text("OR")
                             .font(.headline)
                             .foregroundColor(Color.gray)
