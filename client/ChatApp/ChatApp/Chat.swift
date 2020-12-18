@@ -8,7 +8,9 @@
 
 import SwiftUI
 
-class Chat: Codable {
+class Chat: Codable, Fetchable {
+    static var apiBase = "chat"
+    
     private var name: String
     
     init(name: String) {

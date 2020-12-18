@@ -8,7 +8,9 @@
 
 import SwiftUI
 
-class Message: Codable {
+class Message: Codable, Fetchable {
+    static var apiBase = "message"
+    
     private(set) var _id: String
     private(set) var handle: String
     private(set) var message: String
