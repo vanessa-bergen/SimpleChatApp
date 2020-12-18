@@ -53,5 +53,21 @@ module.exports = function(wss) {
 		});
 	}
 
+	c.getByChat = function(req, res) {
+		var chat_name = req.params.chat_name;
+		var q = Chat.findOne({name : chat_name}, "-__v");
+		q.exec(function(err, chat) {
+			if (err) return reqError(res, 500, err);
+
+			var q = Message.find({chat_id : chat._id})
+			q.sort('date');
+			q.exec(function(err, message) {
+				if (err) return reqError(res, 500, err);
+
+				res.json(message);
+			});
+		});
+	}
+
 	return c;
 }
