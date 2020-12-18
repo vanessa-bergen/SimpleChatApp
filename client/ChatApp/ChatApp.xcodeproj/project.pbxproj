@@ -17,6 +17,11 @@
 		C277A2CE2587E0040014586D /* SocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C277A2CD2587E0040014586D /* SocketManager.swift */; };
 		C277A2D02587E03E0014586D /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = C277A2CF2587E03E0014586D /* Message.swift */; };
 		C277A2D22587E91D0014586D /* UITextViewWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C277A2D12587E91D0014586D /* UITextViewWrapper.swift */; };
+		C277A2D4258A75F80014586D /* Color-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C277A2D3258A75F80014586D /* Color-Extension.swift */; };
+		C277A2D6258BC4AE0014586D /* CreateChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C277A2D5258BC4AE0014586D /* CreateChatView.swift */; };
+		C277A2D8258BC9050014586D /* MyTextFieldStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C277A2D7258BC9050014586D /* MyTextFieldStyle.swift */; };
+		C277A2DA258C0EF00014586D /* Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = C277A2D9258C0EF00014586D /* Chat.swift */; };
+		C277A2DC258CF8440014586D /* APICalls.swift in Sources */ = {isa = PBXBuildFile; fileRef = C277A2DB258CF8440014586D /* APICalls.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +36,11 @@
 		C277A2CD2587E0040014586D /* SocketManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocketManager.swift; sourceTree = "<group>"; };
 		C277A2CF2587E03E0014586D /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		C277A2D12587E91D0014586D /* UITextViewWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextViewWrapper.swift; sourceTree = "<group>"; };
+		C277A2D3258A75F80014586D /* Color-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color-Extension.swift"; sourceTree = "<group>"; };
+		C277A2D5258BC4AE0014586D /* CreateChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateChatView.swift; sourceTree = "<group>"; };
+		C277A2D7258BC9050014586D /* MyTextFieldStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyTextFieldStyle.swift; sourceTree = "<group>"; };
+		C277A2D9258C0EF00014586D /* Chat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chat.swift; sourceTree = "<group>"; };
+		C277A2DB258CF8440014586D /* APICalls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APICalls.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,11 +75,16 @@
 			isa = PBXGroup;
 			children = (
 				C277A2B62587CF840014586D /* AppDelegate.swift */,
+				C277A2D3258A75F80014586D /* Color-Extension.swift */,
 				C277A2B82587CF840014586D /* SceneDelegate.swift */,
 				C277A2BA2587CF850014586D /* ContentView.swift */,
+				C277A2D5258BC4AE0014586D /* CreateChatView.swift */,
+				C277A2DB258CF8440014586D /* APICalls.swift */,
+				C277A2D7258BC9050014586D /* MyTextFieldStyle.swift */,
 				C277A2CD2587E0040014586D /* SocketManager.swift */,
 				C277A2D12587E91D0014586D /* UITextViewWrapper.swift */,
 				C277A2CF2587E03E0014586D /* Message.swift */,
+				C277A2D9258C0EF00014586D /* Chat.swift */,
 				C277A2BC2587CF8C0014586D /* Assets.xcassets */,
 				C277A2C12587CF8C0014586D /* LaunchScreen.storyboard */,
 				C277A2C42587CF8C0014586D /* Info.plist */,
@@ -166,9 +181,14 @@
 				C277A2B72587CF840014586D /* AppDelegate.swift in Sources */,
 				C277A2B92587CF840014586D /* SceneDelegate.swift in Sources */,
 				C277A2D02587E03E0014586D /* Message.swift in Sources */,
+				C277A2DA258C0EF00014586D /* Chat.swift in Sources */,
 				C277A2CE2587E0040014586D /* SocketManager.swift in Sources */,
 				C277A2BB2587CF850014586D /* ContentView.swift in Sources */,
 				C277A2D22587E91D0014586D /* UITextViewWrapper.swift in Sources */,
+				C277A2D8258BC9050014586D /* MyTextFieldStyle.swift in Sources */,
+				C277A2D6258BC4AE0014586D /* CreateChatView.swift in Sources */,
+				C277A2D4258A75F80014586D /* Color-Extension.swift in Sources */,
+				C277A2DC258CF8440014586D /* APICalls.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
