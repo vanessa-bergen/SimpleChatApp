@@ -82,6 +82,48 @@ class APICalls {
 
         }.resume()
     }
+    
+    func getChat(for chat: String, completion: @escaping (Result<Bool, HTTPError>) -> Void) {
+        guard let url = URL(string: baseURL + "chat/" + chat) else {
+            completion(.failure(.badURL))
+            return
+        }
+        
+        print(url)
+        
+        let task = session.dataTask(with: url) { (data, response, error) in
+            if let error = error {
+                completion(.failure(.serverError))
+            } else if let data = data, let dataString = String(data: data, encoding: .utf8), let response = response {
+                print("data ", data)
+                print("data response ", dataString)
+                print("response ", response)
+                completion(.success(dataString.boolValue))
+            }
+        }
+        task.resume()
+    }
+//    func fetchData<T: Fetchable>(_ model: T.Type, completion: @escaping (Result<[T], HTTPError>) -> Void) {
+//
+//        // Construct the URLRequest
+//        // since the model conforms to Fetchable, it has to have the variable apiBase
+//
+//        guard let url = URL(string: baseURL + model.apiBase) else {
+//            completion(.failure(.badURL))
+//            return
+//        }
+//
+//        // Send it to the URLSession
+//        let task = session.dataTask(with: url) { (data, _, error) in
+//            if let error = error {
+//                completion(.failure(.serverError))
+//            } else if let data = data {
+//                let result = Result { try JSONDecoder().decode([T].self, from: data) }
+//                completion(.success(result))
+//            }
+//        }
+//        task.resume()
+//    }
 }
 
 // the generic type T will have to conform to Fetchable and Codable

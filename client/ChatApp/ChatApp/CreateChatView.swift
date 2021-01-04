@@ -56,20 +56,7 @@ struct CreateChatView: View {
                             .frame(width: 0.9 * geo.size.width)
                     }
                     Button(action: {
-                        let newChat = Chat(name: self.chatName)
-                        self.apiCalls.sendData(Chat.self, for: newChat) { (result) in
-                            switch result {
-                            case .success((let data, let response)):
-                                print(response)
-                                self.errorShown = false
-                                self.action = 1
-                            case .failure(let error):
-                                self.errorShown = true
-                                print(error.localizedDescription)
-                                self.errMsg = error.localizedDescription
-                                
-                            }
-                        }
+                        self.enterChat()
                     }) {
                     Text(self.createNew ? "Create!" : "Join!")
                         .foregroundColor(.white)
@@ -113,6 +100,39 @@ struct CreateChatView: View {
             }
             .navigationBarTitle("Enter Chat", displayMode: .inline)
         }
+    }
+    func enterChat() {
+        if self.createNew {
+            let newChat = Chat(name: self.chatName)
+            self.apiCalls.sendData(Chat.self, for: newChat) { (result) in
+                switch result {
+                case .success((_, let response)):
+                    print(response)
+                    self.errorShown = false
+                    self.action = 1
+                case .failure(let error):
+                    print(error.localizedDescription)
+                    self.errMsg = error.localizedDescription
+                    self.errorShown = true
+                }
+            }
+        } else {
+            self.apiCalls.getChat(for: self.chatName) { (result) in
+                switch result {
+                case .success(let response):
+                    if response {
+                        self.errorShown = false
+                        self.action = 1
+                    } else {
+                        self.errMsg = "Chat Name does not exist. Please create new chat."
+                        self.errorShown = true
+                    }
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            }
+        }
+        
     }
 }
 
