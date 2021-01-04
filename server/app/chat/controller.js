@@ -38,5 +38,15 @@ module.exports = function() {
 		});
 	}
 
+	c.chatExists = function(req, res) {
+		var name = req.params.name;
+		var q = Chat.findOne({name : name});
+		q.exec(function(err, chat) {
+			if (err) return reqError(res, 500, err);
+
+			res.send(chat != null);
+		});
+	}
+
 	return c;
 }
