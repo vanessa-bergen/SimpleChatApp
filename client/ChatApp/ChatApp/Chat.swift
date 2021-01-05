@@ -11,9 +11,11 @@ import SwiftUI
 class Chat: Codable, Fetchable {
     static var apiBase = "chat"
     
+    private(set) var _id: String
     private(set) var name: String
     
     init(name: String) {
+        self._id = UUID().uuidString
         self.name = name
     }
 }
