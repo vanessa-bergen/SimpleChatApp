@@ -14,6 +14,7 @@ class SocketManager: ObservableObject, WebSocketDelegate {
     var socket: WebSocket!
     var isConnected = false
     let server = WebSocketServer()
+    var apiCalls = APICalls()
     
     init() {
         
@@ -29,10 +30,10 @@ class SocketManager: ObservableObject, WebSocketDelegate {
         switch event {
         case .connected(let headers):
             isConnected = true
-            print("websocket is connected: \(headers)")
+            //print("websocket is connected: \(headers)")
         case .disconnected(let reason, let code):
             isConnected = false
-            print("websocket is disconnected: \(reason) with code: \(code)")
+            //print("websocket is disconnected: \(reason) with code: \(code)")
         case .text(let string):
             print("Received text: \(string)")
             let data = string.data(using: .utf8)!
@@ -66,16 +67,35 @@ class SocketManager: ObservableObject, WebSocketDelegate {
         }
     }
     
-    func send(with handle: String, for message: String) {
-        let data = Message(handle: handle, message: message)
-        
-        guard let json = try? JSONEncoder().encode(data) else {
-            print("Failed to encode message")
+    func join(in chat_id: String) {
+        guard let json = try? JSONEncoder().encode(["room" : chat_id ]) else {
+            print("failed to encode chat room")
             return
         }
-        
         socket.write(data: json) {
-            print("sent message \(json)")
+            print("joined")
+        }
+    }
+    // TODO: change this to pass in chat object
+    func send(in chat: String, with handle: String, for message: String) {
+//        let data = Message(handle: handle, message: message)
+//
+//        guard let json = try? JSONEncoder().encode(data) else {
+//            print("Failed to encode message")
+//            return
+//        }
+//
+//        socket.write(data: json) {
+//            print("sent message \(json)")
+//        }
+        let message = Message(chat: Chat(name: chat), handle: handle, message: message)
+        apiCalls.sendData(Message.self, for: message) { (result) in
+            switch result {
+            case .success((let data, let response)):
+                print(response)
+            case .failure(let error):
+                print(error)
+            }
         }
     }
     
@@ -86,6 +106,23 @@ class SocketManager: ObservableObject, WebSocketDelegate {
             self.messages.append(decodedMsg)
         } else {
             print("Invalid response from server")
+        }
+    }
+    
+    func loadMessages(for chatName: String) {
+        // load old messages here, will want to only load a certain amount
+        print("load messages for chat \(chatName)")
+        apiCalls.getMessages(for: chatName) { (result) in
+            switch result {
+            case .success(let data):
+                DispatchQueue.main.async {
+                    self.objectWillChange.send()
+                    self.messages = data
+                    print("messages \(self.messages)")
+                }
+            case .failure(let error):
+                print("error")
+            }
         }
     }
     
