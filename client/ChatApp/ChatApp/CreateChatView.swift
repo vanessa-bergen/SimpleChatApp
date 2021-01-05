@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct CreateChatView: View {
-    
+    @ObservedObject var service = SocketManager()
     @State private var chatName = ""
     @State private var isSelected = false
     @State private var createNew = true
@@ -26,7 +26,7 @@ struct CreateChatView: View {
         NavigationView {
             GeometryReader { geo in
                 VStack(spacing: 10) {
-                    NavigationLink(destination: ContentView(chatName: self.chatName), tag: 1, selection: self.$action) {
+                    NavigationLink(destination: ContentView(chatName: self.chatName, service: self.service), tag: 1, selection: self.$action) {
                         EmptyView()
                     }
                     Text(self.createNew ? "Create New Chat Room" : "Join Existing Chat Room")

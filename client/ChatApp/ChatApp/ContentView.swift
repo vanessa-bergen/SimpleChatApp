@@ -11,7 +11,7 @@ import SwiftUI
 struct ContentView: View {
     @Environment(\.presentationMode) var presentationMode
     var chatName: String
-    @ObservedObject var service = SocketManager()
+    @ObservedObject var service: SocketManager
     @State private var output = ""
     @State private var handle = ""
     @State private var message = ""
@@ -75,11 +75,9 @@ struct ContentView: View {
             )
             .navigationBarBackButtonHidden(true)
         }
-    }
-}
-
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView(chatName: "Hello")
+        .onAppear {
+            // load existing messages in chat
+            self.service.loadMessages(for: self.chatName)
+        }
     }
 }
