@@ -9,7 +9,7 @@
 import Foundation
 
 enum HTTPError: Error {
-    case badURL, requestFailed, serverError, keyError, unknown
+    case badURL, requestFailed, serverError, keyError, unknown, incorrectChat
 }
 
 extension HTTPError: LocalizedError {
@@ -23,6 +23,8 @@ extension HTTPError: LocalizedError {
             return NSLocalizedString("Unknown problem occured with the server. Please try again", comment: "Server Error")
         case .keyError:
             return NSLocalizedString("The Chat name entered already exists. Please enter a new one.", comment: "Duplicate Key")
+        case .incorrectChat:
+            return NSLocalizedString("The Chat name entered does not exist. Create a new chat.", comment: "Chat Name Error")
         case .unknown:
             return NSLocalizedString("Unknown error occured. Please try again.", comment: "Unknown")
         }
@@ -83,7 +85,7 @@ class APICalls {
         }.resume()
     }
     
-    func getChat(for chat: String, completion: @escaping (Result<Bool, HTTPError>) -> Void) {
+    func getChat(for chat: String, completion: @escaping (Result<Chat, HTTPError>) -> Void) {
         guard let url = URL(string: baseURL + "chat/" + chat) else {
             completion(.failure(.badURL))
             return
@@ -91,14 +93,39 @@ class APICalls {
         
         print(url)
         
-        let task = session.dataTask(with: url) { (data, response, error) in
+//        let task = session.dataTask(with: url) { (data, response, error) in
+//            if let error = error {
+//                completion(.failure(.serverError))
+//            } else if let data = data, let dataString = String(data: data, encoding: .utf8), let response = response {
+//                print("data ", data)
+//                print("data response ", dataString)
+//                print("response ", response)
+//                completion(.success(dataString.boolValue))
+//            }
+//        }
+//        task.resume()
+        
+        let task = session.dataTask(with: url) { (data, _, error) in
             if let error = error {
                 completion(.failure(.serverError))
-            } else if let data = data, let dataString = String(data: data, encoding: .utf8), let response = response {
-                print("data ", data)
-                print("data response ", dataString)
-                print("response ", response)
-                completion(.success(dataString.boolValue))
+            } else if let data = data, let dataString = String(data: data, encoding: .utf8) {
+                // need to return an error here if the data is empty, this means chat doesn't exist
+                print(data)
+                print(dataString)
+                if dataString == "null" {
+                    completion(.failure(.incorrectChat))
+                    return
+                }
+                
+                
+                do {
+                    let decodedResponse = try JSONDecoder().decode(Chat.self, from: data)
+                    print(decodedResponse)
+                    completion(.success(decodedResponse))
+                } catch let jsonError as NSError {
+                    print("JSON decode failed: \(jsonError.localizedDescription)")
+                    completion(.failure(.requestFailed))
+                }
             }
         }
         task.resume()
