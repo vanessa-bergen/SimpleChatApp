@@ -15,7 +15,7 @@ var MessageSchema = Schema({
 		type : Date,
 		required : true
 	},
-	chat_id : {
+	chat : {
 		type : Schema.Types.ObjectId, 
 		ref : 'Chat',
 		required : true

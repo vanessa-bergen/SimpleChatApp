@@ -14,7 +14,7 @@ module.exports = function(wss) {
 		delete req.body._id
 
 		// perform a query to get the id of the chat from the name
-		var chatQ = Chat.findOne({name : req.body.chat_name}, "-__v");
+		var chatQ = Chat.findOne({name : req.body.chat}, "-__v");
 
 		chatQ.exec(function(err, chat) {
 			if (err) return reqError(res, 500, err);
@@ -24,7 +24,7 @@ module.exports = function(wss) {
 				handle : req.body.handle,
 				message : req.body.message,
 				date : new Date(),
-				chat_id : chat._id
+				chat : chat._id
 			}
 
 			var newMessage = new Message(newMessageObj);
@@ -32,13 +32,20 @@ module.exports = function(wss) {
 			newMessage.save(function(err) {
 				if (err) return reqError(res, 500, err);
 				
-				// on a successfule save to the database, send the message through websockets
-				// this way message will appear in clients without calling a GET request from the client
-				webSocketScript.send(wss, newMessageObj);
+				newMessage.populate('chat', function(err, newMessage) {
+					if (err) return reqError(res, 500, err);
+					// on a successfule save to the database, send the message through websockets
+					// this way message will appear in clients without calling a GET request from the client
+					//webSocketScript.send(wss, newMessageObj);
 
-				res.status(201).json({
-					newMessage : newMessage
+					console.log("new message " + newMessage);
+					webSocketScript.send(wss, newMessage);
+
+					res.status(201).json({
+						newMessage : newMessage
+					});
 				});
+				
 			});
 		});
 	}
@@ -58,13 +65,14 @@ module.exports = function(wss) {
 		var q = Chat.findOne({name : chat_name}, "-__v");
 		q.exec(function(err, chat) {
 			if (err) return reqError(res, 500, err);
-
-			var q = Message.find({chat_id : chat._id})
+			console.log("chat id " + chat._id);
+			var q = Message.find({chat : chat._id});
+			q.populate({ path : 'chat' });
 			q.sort('date');
-			q.exec(function(err, message) {
+			q.exec(function(err, messages) {
 				if (err) return reqError(res, 500, err);
-
-				res.json(message);
+				console.log("messages for chat " + chat_name + messages);
+				res.json(messages);
 			});
 		});
 	}
