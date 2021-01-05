@@ -51,7 +51,7 @@ struct ContentView: View {
                     
                 Button(action: {
                     // Send message here
-                    self.service.send(with: self.handle, for: self.message)
+                    self.service.send(in: self.chatName, with: self.handle, for: self.message)
                 }) {
                     Text("Send!")
                         .foregroundColor(.white)
