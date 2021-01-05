@@ -7,6 +7,8 @@ module.exports = function() {
 	c.create = function(req, res) {
 		console.log(JSON.stringify(req.body));
 
+		delete req.body._id;
+
 		var newChat = new Chat(req.body);
 
 		newChat.save(function(err) {
