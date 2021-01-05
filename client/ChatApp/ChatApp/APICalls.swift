@@ -103,6 +103,31 @@ class APICalls {
         }
         task.resume()
     }
+    
+    func getMessages(for chat: String, completion: @escaping (Result<[Message], HTTPError>) -> Void) {
+        guard let url = URL(string: baseURL + "message/" + chat) else {
+            completion(.failure(.badURL))
+            return
+        }
+        let task = session.dataTask(with: url) { (data, _, error) in
+            if let error = error {
+                completion(.failure(.serverError))
+            } else if let data = data {
+                print("data ", data)
+                
+                do {
+                    let decodedResponse = try JSONDecoder().decode([Message].self, from: data)
+                    print(decodedResponse)
+                    completion(.success(decodedResponse))
+                  
+                } catch let jsonError as NSError {
+                    print("JSON decode failed: \(jsonError.localizedDescription)")
+                    completion(.failure(.requestFailed))
+                }
+            }
+        }
+        task.resume()
+    }
 //    func fetchData<T: Fetchable>(_ model: T.Type, completion: @escaping (Result<[T], HTTPError>) -> Void) {
 //
 //        // Construct the URLRequest
