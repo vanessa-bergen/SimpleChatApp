@@ -11,7 +11,7 @@ import SwiftUI
 class Chat: Codable, Fetchable {
     static var apiBase = "chat"
     
-    private var name: String
+    private(set) var name: String
     
     init(name: String) {
         self.name = name
