@@ -52,6 +52,7 @@ struct CreateChatView: View {
                         .frame(width: 0.9 * geo.size.width)
                     if self.errorShown {
                         Text(self.errMsg)
+                            .multilineTextAlignment(.center)
                             .foregroundColor(.red)
                             .frame(width: 0.9 * geo.size.width)
                     }
@@ -65,8 +66,6 @@ struct CreateChatView: View {
                         .frame(maxWidth:.infinity)
                         
                     }
-                        
-                    
                         .disabled(self.disabled)
                         .frame(width: 0.9 * geo.size.width)
                         .background(Color.btnBlue)
@@ -119,16 +118,22 @@ struct CreateChatView: View {
         } else {
             self.apiCalls.getChat(for: self.chatName) { (result) in
                 switch result {
-                case .success(let response):
-                    if response {
-                        self.errorShown = false
-                        self.action = 1
-                    } else {
-                        self.errMsg = "Chat Name does not exist. Please create new chat."
-                        self.errorShown = true
-                    }
+                case .success(let chat):
+                    print(chat)
+//                    if response {
+//                        self.service.join(in: "Chat2")
+//                        self.errorShown = false
+//                        self.action = 1
+//                    } else {
+//                        self.errMsg = "Chat Name does not exist. Please create new chat."
+//                        self.errorShown = true
+//                    }
+                    self.service.join(in: chat._id)
+                    self.errorShown = false
+                    self.action = 1
                 case .failure(let error):
-                    print(error.localizedDescription)
+                    self.errMsg = error.localizedDescription
+                    self.errorShown = true
                 }
             }
         }
