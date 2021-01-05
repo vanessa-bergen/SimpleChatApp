@@ -15,6 +15,14 @@ var wss = webSocketScript.init(server);
 
 wss.on('connection', function connection(ws) {
 	console.log('client connected');
+	ws.room = [];
+	ws.on('message', function(message) {
+		var message = JSON.parse(message);
+		console.log("chat room " + message.room);
+		if (message.room) {
+			ws.room.push(message.room);
+		}
+	});
 });
 
 // initialize http routs

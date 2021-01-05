@@ -10,9 +10,13 @@ module.exports = {
 	},
 
 	// send the message object to all clients connected to the server via websocket
-	send: function(wss, msg) {
+	send: function(wss, room, msg) {
 		wss.clients.forEach(function each(client) {
-			if (client.readyState === WebSocket.OPEN) {
+			console.log("room client is in " + client.room + " message room " + room);
+			
+			console.log(client.room.indexOf(String(room)));
+			
+			if (client.readyState === WebSocket.OPEN && client.room.indexOf(String(room)) != -1) {
 				client.send(JSON.stringify(msg));
 			}
 		});
