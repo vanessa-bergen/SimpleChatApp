@@ -11,6 +11,7 @@ import SwiftUI
 struct CreateChatView: View {
     @ObservedObject var service = SocketManager()
     @State private var chatName = ""
+    @State private var chat: Chat?
     @State private var isSelected = false
     @State private var createNew = true
     @State private var errorShown = false
@@ -26,7 +27,7 @@ struct CreateChatView: View {
         NavigationView {
             GeometryReader { geo in
                 VStack(spacing: 10) {
-                    NavigationLink(destination: ContentView(chatName: self.chatName, service: self.service), tag: 1, selection: self.$action) {
+                    NavigationLink(destination: ContentView(chat: self.chat, service: self.service), tag: 1, selection: self.$action) {
                         EmptyView()
                     }
                     Text(self.createNew ? "Create New Chat Room" : "Join Existing Chat Room")
@@ -105,39 +106,36 @@ struct CreateChatView: View {
             let newChat = Chat(name: self.chatName)
             self.apiCalls.sendData(Chat.self, for: newChat) { (result) in
                 switch result {
-                case .success((_, let response)):
-                    print(response)
-                    self.errorShown = false
-                    self.action = 1
+                case .success(let chat):
+                    self.openChat(for: chat)
                 case .failure(let error):
-                    print(error.localizedDescription)
-                    self.errMsg = error.localizedDescription
-                    self.errorShown = true
+                    self.chatError(with: error)
                 }
             }
         } else {
             self.apiCalls.getChat(for: self.chatName) { (result) in
                 switch result {
                 case .success(let chat):
-                    print(chat)
-//                    if response {
-//                        self.service.join(in: "Chat2")
-//                        self.errorShown = false
-//                        self.action = 1
-//                    } else {
-//                        self.errMsg = "Chat Name does not exist. Please create new chat."
-//                        self.errorShown = true
-//                    }
-                    self.service.join(in: chat._id)
-                    self.errorShown = false
-                    self.action = 1
+                    self.openChat(for: chat)
                 case .failure(let error):
-                    self.errMsg = error.localizedDescription
-                    self.errorShown = true
+                    self.chatError(with: error)
                 }
             }
         }
         
+    }
+    
+    func openChat(for chat: Chat) {
+        self.chat = chat
+        print(chat._id)
+        self.service.join(in: chat._id)
+        self.errorShown = false
+        self.action = 1
+    }
+    
+    func chatError(with error: HTTPError) {
+        self.errMsg = error.localizedDescription
+        self.errorShown = true
     }
 }
 

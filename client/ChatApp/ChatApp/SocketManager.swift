@@ -77,7 +77,7 @@ class SocketManager: ObservableObject, WebSocketDelegate {
         }
     }
     // TODO: change this to pass in chat object
-    func send(in chat: String, with handle: String, for message: String) {
+    func send(in chat: Chat, with handle: String, for message: String) {
 //        let data = Message(handle: handle, message: message)
 //
 //        guard let json = try? JSONEncoder().encode(data) else {
@@ -88,11 +88,11 @@ class SocketManager: ObservableObject, WebSocketDelegate {
 //        socket.write(data: json) {
 //            print("sent message \(json)")
 //        }
-        let message = Message(chat: Chat(name: chat), handle: handle, message: message)
+        let message = Message(chat: chat, handle: handle, message: message)
         apiCalls.sendData(Message.self, for: message) { (result) in
             switch result {
-            case .success((let data, let response)):
-                print(response)
+            case .success(let message):
+                print(message)
             case .failure(let error):
                 print(error)
             }

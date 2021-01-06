@@ -10,11 +10,12 @@ import SwiftUI
 
 struct ContentView: View {
     @Environment(\.presentationMode) var presentationMode
-    var chatName: String
+    var chat: Chat?
     @ObservedObject var service: SocketManager
     @State private var output = ""
     @State private var handle = ""
     @State private var message = ""
+    @State private var showingAlert = false
     
     var body: some View {
         
@@ -62,7 +63,8 @@ struct ContentView: View {
                     
                 Button(action: {
                     // Send message here
-                    self.service.send(in: self.chatName, with: self.handle, for: self.message)
+                    // save to unwrap chat, since we make sure the chat exists when this view opens
+                    self.service.send(in: self.chat!, with: self.handle, for: self.message)
                 }) {
                     Text("Send!")
                         .foregroundColor(.white)
@@ -74,7 +76,7 @@ struct ContentView: View {
                 .padding(.bottom)
                 
             }
-            .navigationBarTitle("\(self.chatName)")
+            .navigationBarTitle(self.chat != nil ? "\(self.chat!.name)" : "")
             .navigationBarItems(
                 trailing:
                     Button(action: {
@@ -86,9 +88,27 @@ struct ContentView: View {
             )
             .navigationBarBackButtonHidden(true)
         }
-        .onAppear {
-            // load existing messages in chat
-            self.service.loadMessages(for: self.chatName)
+        .alert(isPresented: $showingAlert) {
+            Alert(
+                title: Text("Unexpected Error Occurred"),
+                message: Text("Please try again."),
+                dismissButton: .default(Text("OK!")) {
+                    self.presentationMode.wrappedValue.dismiss()
+                }
+            )
         }
+        .onAppear {
+            self.initChat()
+        }
+    }
+    
+    func initChat() {
+        // check that chat exists, otherwise return an error
+        guard let chat = self.chat else {
+            self.showingAlert = true
+            return
+        }
+        // load existing messages in chat
+        self.service.loadMessages(for: chat.name)
     }
 }
