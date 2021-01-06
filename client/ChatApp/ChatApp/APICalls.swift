@@ -35,7 +35,7 @@ class APICalls {
     let baseURL = "http://localhost:4000/"
     let session = URLSession.shared
     
-    func sendData<T: Fetchable>(_ model: T.Type, for object: T, completion: @escaping (Result<(Data, URLResponse), HTTPError>) -> Void) {
+    func sendData<T: Fetchable>(_ model: T.Type, for object: T, completion: @escaping (Result<T, HTTPError>) -> Void) {
         
         guard let encoded = try? JSONEncoder().encode(object) else {
             print("Failed to encode object")
@@ -80,7 +80,14 @@ class APICalls {
                 return
             }
             
-            completion(.success((data, response)))
+            do {
+                let decodedResponse = try JSONDecoder().decode(T.self, from: data)
+                print(decodedResponse)
+                completion(.success(decodedResponse))
+            } catch let jsonError as NSError {
+                print("JSON decode failed: \(jsonError.localizedDescription)")
+                completion(.failure(.requestFailed))
+            }
 
         }.resume()
     }
