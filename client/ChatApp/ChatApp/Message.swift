@@ -17,6 +17,13 @@ class Message: Codable, Fetchable {
     private(set) var date: String
     private(set) var chat: Chat
     
+    //using static so that the dateFormatter is created the first time it is called, after that it will reuse the same instance
+    private static let dateFormatter: DateFormatter = DateFormatter()
+    var dateFormatted: String {
+        Message.dateFormatter.date(fromJSON: date)
+    }
+    
+    
     enum CodingKeys: CodingKey {
         case _id, handle, message, date, chat
     }
@@ -24,7 +31,7 @@ class Message: Codable, Fetchable {
         self._id = UUID().uuidString
         self.message = message
         self.handle = handle
-        self.date = "fakedate"
+        self.date = ""
         self.chat = chat
     }
     
