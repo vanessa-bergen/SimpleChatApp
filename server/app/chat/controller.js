@@ -14,9 +14,7 @@ module.exports = function() {
 		newChat.save(function(err) {
 			if (err) return reqError(res, 500, err);
 
-			res.status(201).json({
-				newChat : newChat
-			});
+			res.status(201).json(newChat);
 		});
 	}
 
