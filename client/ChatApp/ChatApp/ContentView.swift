@@ -21,15 +21,26 @@ struct ContentView: View {
         GeometryReader { geo in
             VStack {
                 ScrollView {
-                    ForEach(self.service.messages, id: \._id) { chat in
-                        HStack {
-                            Text("\(chat.handle): ")
-                                .bold()
-                            Text(chat.message)
-                            Spacer()
+                    ForEach(self.service.messages, id: \._id) { msg in
+                        VStack {
+                            Text(msg.message)
+                                .foregroundColor(.white)
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(Color.btnBlue.opacity(0.7))
+                                .clipShape(RoundedRectangle(cornerRadius: 5))
+                                
+                            
+                            HStack {
+                                Text("\(msg.handle) ")
+                                    .font(.footnote)
+                                Spacer()
+                                Text(msg.dateFormatted)
+                                    .font(.footnote)
+                            }
                         }
                         .padding([.leading, .trailing], 5)
-                        .padding([.top, .bottom], 1)
+                        .padding([.top, .bottom], 5)
                         
                     }.frame(maxWidth: .infinity)
                         
